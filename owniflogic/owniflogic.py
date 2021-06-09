@@ -1,49 +1,40 @@
 #!/usr/bin/env python3
-points = 0
-
-vio = input("Do you beat your kids?").lower()
+viopoints = 0
+vio = input("Do you beat your kids?\n").lower()
 if vio == "hell no": 
     points += 2
+    print("great, what a happy family")
 elif vio == "only a slap on their hand": 
     points += 1
+    print("not a solution to teach your kids")
 else:
     points += 0
+    print("stay away from your kids")
 
-if points == 2:
-   print("great, a happy family")
-elif points == 1:
-   print("")
-else:
-   print("stay away from your kids")
-
-kids = int(input("How many children do you have?"))
+kidspoints = 0
+kids = int(input("How many children do you have?\n"))
 if kids == 2:
     points += 2
+    print("an ideal number")
 elif kids == 1:
     points += 1
+    print("should consider more")
 else:
     points += 0
+    print("too bad")
 
-if points == 2:
-   print("An ideal number")
-elif points == 1:
-   print("Should consider more")
-else:
-   print("Too bad")
-
-btime = int(input("In your house, bedtime is: "))
+btimepoints = 0
+btime = int(input("in your house, bedtime is: \n"))
 if btime <= 9:
     points += 2
+    print("great, a perfect time to tuck in your kids")
 elif btime >= 9:
     points += 1
+    print("kids need plenty sleep")
 else:
    points += 0
+   print("too late for kids)
 
-if points == 2:
-    print("Great, a perfect time to tuck in your kids")
-elif points == 1:
-    print("Kids need plenty sleep")
-else:
-    print("Too late for kids")
+
 
 
