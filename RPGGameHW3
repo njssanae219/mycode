@@ -1,0 +1,175 @@
+#!/usr/bin/python3
+
+# Replace RPG starter project with this code when new instructions are live
+
+def showInstructions():
+    # print a main menu and the commands
+    print('''
+RPG Game
+========
+Commands:
+  go [direction]
+  get [item]
+''')
+
+
+def showStatus():
+    # print the player's current status
+    print('---------------------------')
+    print('You are in the ' + currentRoom)
+    print(desc)
+    print("You currently have: " + str(gold) + ' golds')
+
+   # print the current inventory
+    print('Inventory : ' + str(inventory))
+
+    # print an item if there is one
+    if "item" in rooms[currentRoom]:
+        print('You see a ' + rooms[currentRoom]['item'])
+    print("---------------------------")
+    if "gold" in rooms[currentRoom]:
+        print('You see ' + str(rooms[currentRoom]['gold']) + ' golds')
+    print("---------------------------")
+
+
+# an inventory, which is initially empty
+inventory = []
+desc = ''
+gold = 0
+# a dictionary linking a room to other rooms
+## A dictionary linking a room to other rooms
+rooms = {
+    'Bedroom1': {
+        'south': 'Hall',
+        'item': 'knight\'s helmet',
+        'desc': 'Go south for Hall',
+        'gold': 10
+    },
+
+    'Hall': {
+        'north': 'Bedroom1',
+        'south': 'Kitchen',
+        'east': 'Dining Room',
+        'west': 'Ballroom',
+        'item': 'key',
+        'desc': 'Go south for Kitchen, go east for Dining room, and go west for Ballroom',
+        'gold': 9
+    },
+
+    'Ballroom': {
+        'east': 'Hall',
+        'item': 'magic armor',
+        'desc': 'Go east for Hall',
+        'gold': 7
+    },
+
+    'Kitchen': {
+        'north': 'Hall',
+        'item': 'monster',
+        'desc': 'Go north for Hall',
+        'gold': 18
+    },
+
+    'Dining Room': {
+        'west': 'Hall',
+        'south': 'Garden',
+        'north': 'Armory',
+        'item': 'potion',
+        'desc': 'Go west for Hall, go south for Garden, go north for Armory',
+        'gold': 15
+    },
+
+    'Garden': {
+        'north': 'Dining Room',
+        'east': 'Forest',
+        'desc': 'Go north for Dininig Room and go east for Forest',
+        'gold': 25
+    },
+
+    'Forest': {
+        'west': 'Garden',
+        'item': 'gauntlet',
+        'desc': 'Go west for Garden',
+        'gold': 1
+    },
+
+    'Armory': {
+        'south': 'Dining Room',
+        'item': 'flame sword',
+        'desc': 'Go south for Dining Room.',
+        'gold': 11
+    }
+}
+
+# start the player in the Hall
+currentRoom = 'Hall'
+
+showInstructions()
+
+# loop forever
+while True:
+
+    showStatus()
+
+    # get the player's next 'move'
+    # .split() breaks it up into an list array
+    # eg typing 'go east' would give the list:
+    # ['go','east']
+    move = ''
+    while move == '':
+        move = input('>')
+
+    # split allows an items to have a space on them
+    # get golden key is returned ["get", "golden key"]
+    move = move.lower().split(" ", 1)
+
+    # if they type 'go' first
+    if move[0] == 'go':
+        # check that they are allowed wherever they want to go
+        if move[1] in rooms[currentRoom]:
+            # set the current room to the new room
+            currentRoom = rooms[currentRoom][move[1]]
+            desc = rooms[currentRoom]['desc']
+        # there is no door (link) to the new room
+        else:
+            print('You can\'t go that way!')
+
+    # if they type 'get' first
+    if move[0] == 'get':
+        # if the room contains an item, and the item is the one they want to get
+        if "item" in rooms[currentRoom] and move[1] in rooms[currentRoom]['item']:
+            # add the item to their inventory
+            inventory.append(move[1])
+            # display a helpful message
+            print(move[1] + ' obtained')
+            # delete the item from the room
+            del rooms[currentRoom]['item']
+        # otherwise, if the item isn't there to get
+        elif 'gold' in rooms[currentRoom]:
+            if rooms[currentRoom]['gold']:
+                gold = gold + rooms[currentRoom]['gold']
+            # display a helpful message
+            print(move[1] + ' obtained')
+            # delete the golds from the room
+            del rooms[currentRoom]['gold']
+        # otherwise, if the gold isn't there to get
+        else:
+            # tell them they can't get it
+            print('Can\'t get ' + move[1] + '!')
+
+    ## Define how a player can win
+    if currentRoom == 'Garden' and 'key' in inventory and 'potion' in inventory and 'gauntlet' in inventory and 'magic armor' in inventory and 'knight\'s helmet' in inventory:
+        print('You escaped the house with the full magic items to fight the monster... YOU WIN!')
+        break
+
+    ## If a player enters a room with a monster
+    elif 'item' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['item']:
+        if 'flame sword' in inventory:
+            print("You defeated a monster with a flame sword")
+            print("Your flame sword has broken in two pieces")
+            del inventory[inventory.index('flame sword')]
+            print(str(inventory))
+        else:
+            print('A monster has got you... GAME OVER!')
+        break
+
